@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import TodoList from "./components/TodoList";
+import AddTodoForm from "./components/AddTodoForm";
 
 function App() {
   const [todos, setTodos] = useState([]);
-  const [newTitle, setNewTitle] = useState("");
 
   const fetchTodos = async () => {
     try {
@@ -18,22 +19,19 @@ function App() {
     fetchTodos();
   }, []);
 
-  // ✅ タスク追加
-  const addTodo = async () => {
-    if (!newTitle.trim()) return;
+  const addTodo = async (title) => {
+    if (!title.trim()) return;
     try {
       await axios.post("http://localhost:3001/todo-app", {
-        title: newTitle,
-        done: false, // 初期状態
+        title,
+        done: false,
       });
-      setNewTitle("");
       fetchTodos();
     } catch (error) {
       console.error("追加エラー:", error);
     }
   };
 
-  // ✅ タスク削除
   const deleteTodo = async (id) => {
     try {
       await axios.delete(`http://localhost:3001/todo-app/${id}`);
@@ -46,29 +44,8 @@ function App() {
   return (
     <div style={{ padding: "2rem" }}>
       <h1>📋 ToDoリスト</h1>
-      {todos.map((todo) => (
-        <div key={todo.id} style={{ marginBottom: "0.5rem" }}>
-          {todo.title} {todo.done ? "✅" : "🕒"}
-          <button
-            onClick={() => deleteTodo(todo.id)}
-            style={{ marginLeft: "1rem" }}
-          >
-            削除
-          </button>
-        </div>
-      ))}
-
-      <div style={{ marginTop: "2rem" }}>
-        <input
-          type="text"
-          value={newTitle}
-          onChange={(e) => setNewTitle(e.target.value)}
-          placeholder="タスクのタイトル"
-        />
-        <button onClick={addTodo} style={{ marginLeft: "0.5rem" }}>
-          追加
-        </button>
-      </div>
+      <TodoList todos={todos} onDelete={deleteTodo} />
+      <AddTodoForm onAdd={addTodo} />
     </div>
   );
 }
