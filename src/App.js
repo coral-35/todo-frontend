@@ -3,6 +3,16 @@ import axios from "axios";
 import TodoList from "./components/TodoList";
 import AddTodoForm from "./components/AddTodoForm";
 
+import styled from "styled-components";
+const Title = styled.h1`
+  color: #000;
+  font-family: Inter, sans-serif;
+  font-size: 2rem;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 1rem;
+`;
+
 function App() {
   const [todos, setTodos] = useState([]);
 
@@ -43,7 +53,7 @@ function App() {
 
   return (
     <div style={{ padding: "2rem" }}>
-      <h1>📋 ToDoリスト</h1>
+      <Title>Todoアプリ</Title>
       <TodoList todos={todos} onDelete={deleteTodo} />
       <AddTodoForm onAdd={addTodo} />
     </div>
