@@ -8,13 +8,12 @@ function App() {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
-    console.log('useEffect called');
-    // 初期ロード時のセッション取得
+    // 初期ロード時：セッション取得
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
     });
 
-    // ログイン/ログアウトの状態変更を監視
+    // セッションの変更を監視
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
@@ -25,13 +24,15 @@ function App() {
     };
   }, []);
 
-  // ログインしていなければログイン画面へ
-  if (!session) {
-    return <Login />;
-  }
-
-  // ログイン済みならToDo画面へ
-  return <Todo />;
+  return (
+    <>
+      {!session ? (
+        <Login />
+      ) : (
+        <Todo session={session} />
+      )}
+    </>
+  );
 }
 
 export default App;
