@@ -9,6 +9,7 @@ const Login = () => {
         supabaseClient={supabase}
         appearance={{ theme: ThemeSupa }}
         providers={['google']}
+        redirectTo={process.env.REACT_APP_URL}
       />
     </div>
   );
