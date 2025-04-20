@@ -11,11 +11,16 @@ const ListContainer = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
-function TodoList({ todos, onDelete }) {
+function TodoList({ todos, onDelete, onToggle }) {
   return (
     <ListContainer>
       {todos.map((todo) => (
-        <TodoItem key={todo.id} todo={todo} onDelete={onDelete} />
+        <TodoItem
+          key={todo.id}
+          todo={todo}
+          onDelete={onDelete}
+          onToggle={onToggle}
+        />
       ))}
     </ListContainer>
   );

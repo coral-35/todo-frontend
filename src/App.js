@@ -1,63 +1,37 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import TodoList from "./components/TodoList";
-import AddTodoForm from "./components/AddTodoForm";
-
-import styled from "styled-components";
-const Title = styled.h1`
-  color: #000;
-  font-family: Inter, sans-serif;
-  font-size: 2rem;
-  font-weight: 400;
-  text-align: center;
-  margin-bottom: 1rem;
-`;
+// src/App.js
+import React, { useEffect, useState } from 'react';
+import { supabase } from './supabaseClient';
+import Login from './components/Login';
+import Todo from './pages/Todo';
 
 function App() {
-  const [todos, setTodos] = useState([]);
-
-  const fetchTodos = async () => {
-    try {
-      const res = await axios.get("http://localhost:3001/todo-app");
-      setTodos(res.data);
-    } catch (error) {
-      console.error("読み込みエラー:", error);
-    }
-  };
+  const [session, setSession] = useState(null);
 
   useEffect(() => {
-    fetchTodos();
+    console.log('useEffect called');
+    // 初期ロード時のセッション取得
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    // ログイン/ログアウトの状態変更を監視
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    // クリーンアップ
+    return () => {
+      listener?.subscription.unsubscribe();
+    };
   }, []);
 
-  const addTodo = async (title) => {
-    if (!title.trim()) return;
-    try {
-      await axios.post("http://localhost:3001/todo-app", {
-        title,
-        done: false,
-      });
-      fetchTodos();
-    } catch (error) {
-      console.error("追加エラー:", error);
-    }
-  };
+  // ログインしていなければログイン画面へ
+  if (!session) {
+    return <Login />;
+  }
 
-  const deleteTodo = async (id) => {
-    try {
-      await axios.delete(`http://localhost:3001/todo-app/${id}`);
-      fetchTodos();
-    } catch (error) {
-      console.error("削除エラー:", error);
-    }
-  };
-
-  return (
-    <div style={{ padding: "2rem" }}>
-      <Title>Todoアプリ</Title>
-      <TodoList todos={todos} onDelete={deleteTodo} />
-      <AddTodoForm onAdd={addTodo} />
-    </div>
-  );
+  // ログイン済みならToDo画面へ
+  return <Todo />;
 }
 
 export default App;
