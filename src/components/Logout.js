@@ -7,7 +7,7 @@ const Logout = () => {
       await supabase.auth.signOut();  // サインアウト
       console.log('Logged out successfully');
       // ログアウト後のリダイレクトなど、必要に応じて処理を追加できます
-      window.location.href = '/login';  // ホームページにリダイレクトする例
+      window.location.href = '/';  // ホームページにリダイレクトする例
     } catch (error) {
       console.error('Error logging out: ', error.message);
     }

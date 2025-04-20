@@ -24,6 +24,8 @@ function App() {
     };
   }, []);
 
+  console.log('Current session:', session); // セッション情報を確認
+
   return (
     <>
       {!session ? (

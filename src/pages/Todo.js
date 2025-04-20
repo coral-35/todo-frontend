@@ -37,7 +37,11 @@ function Todo({ session }) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({ title, done: false }),
+        body: JSON.stringify({
+          title, 
+          done: false,
+          user_id: session.user.id,
+        }),
       });
       fetchTodos();
     } catch (error) {
